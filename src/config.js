@@ -1,16 +1,10 @@
-if (
-  !process.env.DB_HOST ||
-  !process.env.DB_USER ||
-  !process.env.DB_PASSWORD ||
-  !process.env.DB_PORT ||
-  !process.env.DB_NAME
-) {
-  console.error('❌ Faltan variables de entorno para la base de datos');
-  process.exit(1);
-}
+import { config } from "dotenv";
 
-export const DB_HOST = process.env.DB_HOST;
-export const DB_USER = process.env.DB_USER;
-export const DB_PASSWORD = process.env.DB_PASSWORD;
-export const DB_PORT = parseInt(process.env.DB_PORT);
-export const DB_DATABASE = process.env.DB_NAME;
+config();
+
+export const PORT = process.env.PORT || 8080;
+export const DB_HOST = process.env.DB_HOST || 'localhost';
+export const DB_USER = process.env.DB_USER || 'root';
+export const DB_PASSWORD = process.env.DB_PASSWORD || '1034657136';
+export const DB_PORT = process.env.DB_PORT || 3306;
+export const DB_NAME= process.env.DB_NAME || 'sanjoseweb';

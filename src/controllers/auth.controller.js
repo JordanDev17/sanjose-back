@@ -4,48 +4,6 @@ import { pool } from '../db.js'; // Asume que exportas 'pool' desde db.js
 import { JWT_SECRET } from '../config.js'; // Asegúrate de que JWT_SECRET esté en tu config.js
 
 
-// --- Función de Registro de Usuario ---
-export const register = async (req, res) => {
-    const { nombre_usuario, email, contrasena, rol } = req.body; // Puedes permitir que el rol se envíe en el registro,
-                                                             // o asignarle un rol por defecto (ej. 'visualizador') si no se especifica.
-
-    // Validaciones básicas
-    if (!nombre_usuario || !email || !contrasena) {
-        return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
-    }
-
-    try {
-        // Verificar si el usuario o email ya existen
-        const [existingUser] = await pool.query('SELECT id FROM usuarios WHERE nombre_usuario = ? OR email = ?', [nombre_usuario, email]);
-        if (existingUser.length > 0) {
-            return res.status(409).json({ message: 'El nombre de usuario o el email ya están registrados.' });
-        }
-
-        // Hashear la contraseña
-        const saltRounds = 10; // Nivel de complejidad del hash
-        const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
-
-        // Insertar el nuevo usuario en la base de datos
-        // Si no quieres que el rol se defina desde el frontend en el registro,
-        // simplemente omite 'rol' de la inserción o asigna un valor fijo aquí.
-        const [result] = await pool.query(
-            'INSERT INTO usuarios (nombre_usuario, email, contrasena, rol) VALUES (?, ?, ?, ?)',
-            [nombre_usuario, email, hashedPassword, rol || 'visualizador'] // Si 'rol' no se envía, se asigna 'visualizador' por defecto
-        );
-
-        res.status(201).json({
-            message: 'Usuario registrado exitosamente',
-            userId: result.insertId,
-            nombre_usuario: nombre_usuario,
-            email: email,
-            rol: rol || 'visualizador' // Retorna el rol asignado
-        });
-    } catch (error) {
-        console.error('Error al registrar usuario:', error);
-        res.status(500).json({ message: 'Error interno del servidor al registrar usuario.' });
-    }
-};
-
 
 // --- Función de Inicio de Sesión de Usuario ---
 export const login = async (req, res) => {

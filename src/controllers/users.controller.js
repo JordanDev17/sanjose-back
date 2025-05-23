@@ -70,7 +70,7 @@ export const postUsersData = async (req, res) => {
         // const hashedPassword = await bcrypt.hash(contrasena, 10);
 
         const [rows] = await pool.query(
-            `INSERT INTO Usuarios (nombre_usuario, email, contrasena, rol, activo)
+            `INSERT INTO usuarios (nombre_usuario, email, contrasena, rol, activo)
              VALUES (?, ?, ?, ?, ?)`,
             [nombre_usuario, email, contrasena, rol, activo] // Usar contrasena sin hashear por ahora
         );

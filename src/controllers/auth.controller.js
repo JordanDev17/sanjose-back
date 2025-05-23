@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { pool } from '../db.js'; // Asume que exportas 'pool' desde db.js
 import { JWT_SECRET } from '../config.js'; // Asegúrate de que JWT_SECRET esté en tu config.js

@@ -1,19 +1,28 @@
-import { Router } from "express";
-import { getWarehouseData, postWarehouseData, patchWarehouseData, deleteWarehouseData, getWarehouseIdData } from "../controllers/warehouse.controller.js";
+import { Router } from 'express';
+// Asegúrate de que la ruta de tu controlador de warehouse sea correcta
+import { getWarehouseData, getWarehouseIdData, postWarehouseData, patchWarehouseData, deleteWarehouseData  } from '../controllers/warehouse.controller.js';
+// Importa tus middlewares de autenticación
+import { verifyToken, authorizeRoles } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
-// WAREHOUSE
+// Rutas de Warehouse
 
-// Ruta GET para obtenerlas Bodegas 
+// 1. Rutas de lectura (Visualización):
+// Opción A: Públicas (no necesitan login) - si es para la página web pública
 router.get('/dashboard-warehouse', getWarehouseData);
-// Ruta GET para obtener una Bodega por su ID
 router.get('/dashboard-warehouse/:id', getWarehouseIdData);
-// Ruta POST para crear unaBodegas
-router.post('/dashboard-warehouse', postWarehouseData );
-// Ruta GET para obtenerlas Bodegas 
-router.patch('/dashboard-warehouse/:id', patchWarehouseData );
-// Ruta GET para obtenerlas Bodegas 
-router.delete('/dashboard-warehouse/:id', deleteWarehouseData ); 
+
+/*
+// Opción B: Protegidas (necesitan login, cualquier rol) - Si solo usuarios logeados pueden ver
+router.get('/warehouse', verifyToken, getAllItems);
+router.get('/warehouse/:id', verifyToken, getItemById);
+*/
+
+// 2. Rutas de Escritura/Edición/Eliminación (CRUD para 'admin' y 'editor'):
+// Estas rutas siempre deben ser protegidas con JWT y con los roles adecuados.
+router.post('/dashboard-warehouse', verifyToken, authorizeRoles('admin', 'editor'), postWarehouseData);
+router.put('/dashboard-warehouse/:id', verifyToken, authorizeRoles('admin', 'editor'), patchWarehouseData);
+router.delete('/dashboard-warehouse/:id', verifyToken, authorizeRoles('admin', 'editor'), deleteWarehouseData);
 
 export default router;

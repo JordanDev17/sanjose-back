@@ -16,18 +16,32 @@ import { verifyToken, authorizeRoles } from './middlewares/auth.middleware.js';
 const app = express();
 
 // --- Configuración de CORS ---
-// 1. Define los orígenes permitidos
-// Para desarrollo, puedes usar localhost:4200 (o el puerto de tu frontend de Angular)
-// Para producción, deberás cambiar esto a la URL de tu frontend desplegado (ej: https://tudominiofrontend.com)
-// Puedes obtener esta URL de una variable de entorno para mayor flexibilidad.
-export const allowedOrigins = process.env.FRONTEND_URL || 'http://localhost:4200'; // Usa tu variable de entorno o el default para Angular
+// Lee la variable de entorno FRONTEND_URL.
+// Si existe, la divide por comas para obtener un array de orígenes.
+// Si no existe, usa un array por defecto con 'http://localhost:4200'.
+const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map(url => url.trim()) // .trim() para limpiar espacios
+  : ['http://localhost:4200'];
 
 const corsOptions = {
-    origin: allowedOrigins, // Solo permite solicitudes desde esta URL(es)
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'], // Métodos HTTP permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos (importante para el token JWT)
-    credentials: true, // Permite el envío de cookies o encabezados de autorización (si los usas)
-    optionsSuccessStatus: 204 // Para pre-vuelos OPTIONS (preflight requests)
+    // Usamos una función para el 'origin' para manejar orígenes múltiples
+    // y para depurar fácilmente si un origen no está permitido.
+    origin: (origin, callback) => {
+        // Permite peticiones sin origen (ej. Postman, o peticiones de mismo origen en la misma red)
+        if (!origin) return callback(null, true);
+
+        // Si el origen de la petición está en nuestra lista de orígenes permitidos
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.log(`CORS Error: Origin '${origin}' not allowed. Configured: ${allowedOrigins.join(', ')}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    optionsSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));

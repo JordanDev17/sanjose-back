@@ -41,3 +41,8 @@ CREATE TABLE usuarios (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+  -- Actualizacion para verificacion 2fa
+ALTER TABLE usuarios
+ADD COLUMN two_factor_enabled BOOLEAN DEFAULT FALSE,
+ADD COLUMN two_factor_code VARCHAR(8) NULL,

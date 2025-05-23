@@ -2,14 +2,13 @@ import express from 'express';
 import cors from 'cors'; // Si lo necesitas para tu frontend
 
 // Importar las rutas existentes
-import indexRoutes from './routes/index.routes.js';
 import homeRoutes from './routes/home.routes.js';
 import newsRoutes from './routes/news.routes.js';
 import warehouseRoutes from './routes/warehouse.routes.js';
 
 // Importar las nuevas rutas de autenticación
 import authRoutes from './routes/auth.routes.js';
-
+import usersRoutes from './routes/users.routes.js';
 // Importar los middlewares de autenticación
 import { verifyToken, authorizeRoles } from './middlewares/auth.middleware.js';
 
@@ -51,10 +50,9 @@ app.use(express.json()); // Para parsear JSON en el cuerpo de las solicitudes
 
 // Rutas de autenticación
 app.use('/api/auth', authRoutes); // Aquí se manejan /api/auth/login y /api/auth/register
-
+app.use('/api/', usersRoutes); // Aquí se manejan /api/users y /api/users/:id
 // Rutas existentes sin protección (si es necesario)
-// Asumo que indexRoutes y homeRoutes no requieren autenticación
-app.use(indexRoutes);
+
 app.use('/api/', homeRoutes);
 
 // Proteger las rutas de News

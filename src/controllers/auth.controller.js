@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { pool } from '../db.js'; // Asume que exportas 'pool' desde db.js
 import { JWT_SECRET } from '../config.js'; // Asegúrate de que JWT_SECRET esté en tu config.js
 
+
 // --- Función de Registro de Usuario ---
 export const register = async (req, res) => {
     const { nombre_usuario, email, contrasena, rol } = req.body; // Puedes permitir que el rol se envíe en el registro,

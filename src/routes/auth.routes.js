@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { login, register } from '../controllers/auth.controller.js'; // Importa tus funciones de controlador
 
+
 const router = Router();
 
 router.post('/login', login);

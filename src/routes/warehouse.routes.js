@@ -22,7 +22,7 @@ router.get('/warehouse/:id', verifyToken, getItemById);
 // 2. Rutas de Escritura/Edición/Eliminación (CRUD para 'admin' y 'editor'):
 // Estas rutas siempre deben ser protegidas con JWT y con los roles adecuados.
 router.post('/dashboard-warehouse', verifyToken, authorizeRoles('admin', 'editor'), postWarehouseData);
-router.put('/dashboard-warehouse/:id', verifyToken, authorizeRoles('admin', 'editor'), patchWarehouseData);
+router.patch('/dashboard-warehouse/:id', verifyToken, authorizeRoles('admin', 'editor'), patchWarehouseData);
 router.delete('/dashboard-warehouse/:id', verifyToken, authorizeRoles('admin', 'editor'), deleteWarehouseData);
 
 export default router;

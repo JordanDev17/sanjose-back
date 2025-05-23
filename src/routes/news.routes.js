@@ -22,7 +22,7 @@ router.get('/news/:id', verifyToken, getNewsById);
 // 2. Rutas de Escritura/Edición/Eliminación (CRUD para 'admin' y 'editor'):
 // Estas rutas siempre deben ser protegidas con JWT y con los roles adecuados.
 router.post('/dashboard-news', verifyToken, authorizeRoles('admin', 'editor'), postNewsData);
-router.put('/dashboard-news/:id', verifyToken, authorizeRoles('admin', 'editor'), patchNewsData);
+router.patch('/dashboard-news/:id', verifyToken, authorizeRoles('admin', 'editor'), patchNewsData);
 router.delete('/dashboard-news/:id', verifyToken, authorizeRoles('admin', 'editor'), deleteNewsData);
 
 export default router;

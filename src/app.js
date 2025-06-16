@@ -1,14 +1,18 @@
 import express from 'express';
 import cors from 'cors'; // Si lo necesitas para tu frontend
 
-// Importar las rutas existentes
+// Rutas de la aplicación
 import homeRoutes from './routes/home.routes.js';
 import newsRoutes from './routes/news.routes.js';
 import warehouseRoutes from './routes/warehouse.routes.js';
 
-// Importar las nuevas rutas de autenticación
+// Rutas de autenticación
 import authRoutes from './routes/auth.routes.js';
 import usersRoutes from './routes/users.routes.js';
+
+// Rutas de chatbot
+import chatbotRoutes from './routes/chatbot.routes.js';
+
 // Importar los middlewares de autenticación
 import { verifyToken, authorizeRoles } from './middlewares/auth.middleware.js';
 
@@ -47,6 +51,10 @@ app.use(cors(corsOptions));
 
 // Middlewares globales
 app.use(express.json()); // Para parsear JSON en el cuerpo de las solicitudes
+
+// Rutas para el chatbot
+app.use('/api/', chatbotRoutes); // Rutas del chatbot, como /api/chatbot
+
 
 // Rutas de autenticación
 app.use('/api/auth', authRoutes); // Aquí se manejan /api/auth/login y /api/auth/register

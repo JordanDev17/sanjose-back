@@ -24,7 +24,7 @@ const app = express();
 // Si no existe, usa un array por defecto con 'http://localhost:4200'.
 const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(url => url.trim()) // .trim() para limpiar espacios
-  : ['http://localhost:4200'];
+  : ['http://localhost:4200', 'https://sanjoseparqueindustrial.up.railway.app'];
 
 const corsOptions = {
     // Usamos una función para el 'origin' para manejar orígenes múltiples

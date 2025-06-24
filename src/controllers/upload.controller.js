@@ -60,7 +60,7 @@ export const uploadImage = (req, res) => {
   // req.protocol: 'http' o 'https'
   // req.get('host'): 'localhost:3000' o tu dominio
   // req.file.filename: el nombre único que Multer le dio al archivo
-  const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+  const imageUrl = `https://${req.get('host')}/uploads/${req.file.filename}`;
   console.log(`Imagen subida exitosamente: ${imageUrl}`);
   res.status(200).json({ imageUrl: imageUrl });
 };

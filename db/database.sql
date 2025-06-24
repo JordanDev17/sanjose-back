@@ -46,3 +46,4 @@ CREATE TABLE usuarios (
 ALTER TABLE usuarios
 ADD COLUMN two_factor_enabled BOOLEAN DEFAULT FALSE,
 ADD COLUMN two_factor_code VARCHAR(8) NULL,
+ADD COLUMN two_factor_code_expires_at DATETIME NULL;

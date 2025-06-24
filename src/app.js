@@ -1,10 +1,14 @@
+// /app.js
 import express from 'express';
-import cors from 'cors'; // Si lo necesitas para tu frontend
+import cors from 'cors';
+import path from 'path'; // Para manejar rutas de archivos
+import fs from 'fs';    // Para operaciones de sistema de archivos (crear directorio)
 
-// Rutas de la aplicación
+// Importar las rutas de la aplicación
 import homeRoutes from './routes/home.routes.js';
 import newsRoutes from './routes/news.routes.js';
-import warehouseRoutes from './routes/warehouse.routes.js';
+import warehouseRoutes from './routes/warehouse.routes.js'; // Importa las rutas de bodegas
+import uploadRoutes from './routes/upload.routes.js'; // Importa las rutas de subida
 
 // Rutas de autenticación
 import authRoutes from './routes/auth.routes.js';
@@ -14,26 +18,19 @@ import usersRoutes from './routes/users.routes.js';
 import chatbotRoutes from './routes/chatbot.routes.js';
 
 // Importar los middlewares de autenticación
-import { verifyToken, authorizeRoles } from './middlewares/auth.middleware.js';
+// Es buena práctica importarlos aquí si los usas en varias rutas, aunque se apliquen en los routers específicos.
+// import { verifyToken, authorizeRoles } from './middlewares/auth.middleware.js';
 
 const app = express();
 
 // --- Configuración de CORS ---
-// Lee la variable de entorno FRONTEND_URL.
-// Si existe, la divide por comas para obtener un array de orígenes.
-// Si no existe, usa un array por defecto con 'http://localhost:4200'.
 const allowedOrigins = process.env.FRONTEND_URL
-  ? process.env.FRONTEND_URL.split(',').map(url => url.trim()) // .trim() para limpiar espacios
+  ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
   : ['http://localhost:4200', 'https://sanjoseparqueindustrial.up.railway.app'];
 
 const corsOptions = {
-    // Usamos una función para el 'origin' para manejar orígenes múltiples
-    // y para depurar fácilmente si un origen no está permitido.
     origin: (origin, callback) => {
-        // Permite peticiones sin origen (ej. Postman, o peticiones de mismo origen en la misma red)
         if (!origin) return callback(null, true);
-
-        // Si el origen de la petición está en nuestra lista de orígenes permitidos
         if (allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -52,26 +49,42 @@ app.use(cors(corsOptions));
 // Middlewares globales
 app.use(express.json()); // Para parsear JSON en el cuerpo de las solicitudes
 
+
+// --- SERVIR ARCHIVOS ESTÁTICOS ---
+// Definir el directorio de subidas. Se guardarán en `public/uploads`
+const uploadsDir = path.resolve('public', 'uploads');
+
+// Crear el directorio si no existe
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log(`Directorio de subidas creado al iniciar: ${uploadsDir}`);
+}
+// Esto permite que las imágenes subidas en 'public/uploads' sean accesibles públicamente
+app.use('/uploads', express.static(uploadsDir));
+
+
+// --- REGISTRO DE RUTAS ---
+
+// Rutas de subida de imágenes (normalmente públicas, por eso se suelen poner antes)
+app.use('/api/', uploadRoutes);
+
 // Rutas para el chatbot
-app.use('/api/', chatbotRoutes); // Rutas del chatbot, como /api/chatbot
+app.use('/api/', chatbotRoutes);
 
+// Rutas de autenticación (login, register)
+app.use('/api/auth', authRoutes);
 
-// Rutas de autenticación
-app.use('/api/auth', authRoutes); // Aquí se manejan /api/auth/login y /api/auth/register
-app.use('/api/', usersRoutes); // Aquí se manejan /api/users y /api/users/:id
+// Rutas de usuarios
+app.use('/api/', usersRoutes);
+
 // Rutas existentes sin protección (si es necesario)
-
 app.use('/api/', homeRoutes);
 
-// Proteger las rutas de News
-// Todas las solicitudes a /api/news y sus subrutas pasarán por verifyToken.
-// Dentro de news.routes.js, usaremos authorizeRoles para acciones específicas.
-app.use('/api/', newsRoutes); // Las rutas en newsRoutes ya deben tener el verifyToken aplicado por ruta.
+// Rutas de News (protegidas en news.routes.js si aplica)
+app.use('/api/', newsRoutes);
 
-// Proteger las rutas de Warehouse
-// Todas las solicitudes a /api/warehouse y sus subrutas pasarán por verifyToken.
-// Dentro de warehouse.routes.js, usaremos authorizeRoles para acciones específicas.
-app.use('/api/', warehouseRoutes); // Las rutas en warehouseRoutes ya deben tener el verifyToken aplicado por ruta.
+// Rutas de Warehouse (protegidas en warehouse.routes.js si aplica)
+app.use('/api/', warehouseRoutes);
 
 
 // Middleware para manejar rutas no encontradas (404)

@@ -26,7 +26,7 @@ const app = express();
 // --- Configuración de CORS ---
 const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-  : ['http://localhost:4200', 'https://sanjose-front.onrender.com'];
+  : ['http://localhost:4200', 'https://sanjose-front.onrender.com/'];
 
 const corsOptions = {
     origin: (origin, callback) => {

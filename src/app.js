@@ -17,6 +17,10 @@ import usersRoutes from './routes/users.routes.js';
 // Rutas de chatbot
 import chatbotRoutes from './routes/chatbot.routes.js';
 
+// Rutas de contacto
+import contactRoutes from './routes/contact.routes.js';
+
+
 // Importar los middlewares de autenticación
 // Es buena práctica importarlos aquí si los usas en varias rutas, aunque se apliquen en los routers específicos.
 // import { verifyToken, authorizeRoles } from './middlewares/auth.middleware.js';
@@ -26,7 +30,7 @@ const app = express();
 // --- Configuración de CORS ---
 const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-  : ['http://localhost:4200', 'https://sanjose-front.onrender.com'];
+  : ['http://localhost:4200', 'https://sanjoseparqueindustrial.up.railway.app'];
 
 const corsOptions = {
     origin: (origin, callback) => {
@@ -85,6 +89,9 @@ app.use('/api/', newsRoutes);
 
 // Rutas de Warehouse (protegidas en warehouse.routes.js si aplica)
 app.use('/api/', warehouseRoutes);
+
+// Rutas de contacto (protegidas en contact.routes.js si aplica)
+app.use('/api', contactRoutes);
 
 
 // Middleware para manejar rutas no encontradas (404)

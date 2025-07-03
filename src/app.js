@@ -30,7 +30,7 @@ const app = express();
 // --- Configuración de CORS ---
 const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-  : ['http://localhost:4200', 'https://sanjoseparqueindustrial.up.railway.app'];
+  : ['http://localhost:4200', 'https://sanjose-front-production.up.railway.app'];
 
 const corsOptions = {
     origin: (origin, callback) => {
